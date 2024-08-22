@@ -7,6 +7,7 @@ import com.happy_travel.happy_travel_backend.services.DestinationService;
 
 import java.util.List;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 
 
@@ -23,6 +24,7 @@ public class DestinationController {
     }
 
     @GetMapping("/destinations")
+    @PreAuthorize("permitAll()")
     public List<Destination> getDestinations() {
         return destinationService.getDestinations();
     }
