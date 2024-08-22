@@ -3,7 +3,12 @@ package com.happy_travel.happy_travel_backend.models;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Set;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -15,7 +20,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "users")
-public class User {
+public class User implements UserDetails{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -70,6 +75,19 @@ public class User {
 
     public void setDestinations(Set<Destination> destinations) {
         this.destinations = destinations;
+    }
+
+
+    @Override
+    public String getUsername() {
+        return null;
+    }
+
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getAuthorities'");
     }
 
 
