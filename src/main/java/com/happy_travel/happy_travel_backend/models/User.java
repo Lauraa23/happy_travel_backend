@@ -5,6 +5,8 @@ import jakarta.persistence.OneToMany;
 
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -22,6 +24,7 @@ public class User {
     private String email;
     private String password;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true) 
+    @JsonIgnore
     private Set<Destination> destinations;
 
     public User() {

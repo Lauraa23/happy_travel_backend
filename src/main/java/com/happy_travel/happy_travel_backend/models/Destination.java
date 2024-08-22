@@ -2,7 +2,9 @@ package com.happy_travel.happy_travel_backend.models;
 
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -17,11 +19,13 @@ public class Destination {
     private int id;
     private String title;
     private String location;
+    @Column(columnDefinition = "TEXT")
     private String description;
     private String imageUrl;
+    
     @ManyToOne 
     @JoinColumn(name = "user_id", nullable = false)
-    private User userId;
+    private User user;
 
     public Destination() {
 
@@ -69,12 +73,12 @@ public class Destination {
     }
 
 
-    public User getUserId() {
-        return this.userId;
+    public User getUser() {
+        return this.user;
     }
 
-    public void setUserId(User userId) {
-        this.userId = userId;
+    public void setUser(User user) {
+        this.user = user;
     }
     
     
