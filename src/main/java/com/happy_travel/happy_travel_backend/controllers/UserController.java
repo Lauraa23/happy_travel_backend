@@ -8,10 +8,13 @@ import com.happy_travel.happy_travel_backend.models.AuthResponse;
 import com.happy_travel.happy_travel_backend.models.LoginRequest;
 import com.happy_travel.happy_travel_backend.models.RegisterRequest;
 import com.happy_travel.happy_travel_backend.models.User;
+
 import com.happy_travel.happy_travel_backend.services.UserService;
+import com.happy_travel.happy_travel_backend.services.JwtService;
 
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -21,7 +24,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 @RequiredArgsConstructor
 public class UserController {
 
+    @Autowired
     private UserService userService;
+    @Autowired
+    private JwtService jwtService;
 
     @PostMapping(value = "login")
     public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest loginRequest) {
@@ -29,7 +35,10 @@ public class UserController {
     }
     
     @PostMapping(value = "register")
-    public ResponseEntity<AuthResponse> registerUser(@RequestBody RegisterRequest request) {
-        return ResponseEntity.ok(userService.register(request));
+    public AuthResponse registerUser(@RequestBody RegisterRequest request) {
+        User newCreatedUser = userService.register(request);
+        return AuthResponse.builder()
+        .token(jwtService.getToken(newCreatedUser))
+        .build();
     }
 }

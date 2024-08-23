@@ -1,11 +1,6 @@
 package com.happy_travel.happy_travel_backend.services;
 
-import java.util.Optional;
-
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.happy_travel.happy_travel_backend.models.AuthResponse;
@@ -14,39 +9,31 @@ import com.happy_travel.happy_travel_backend.models.RegisterRequest;
 import com.happy_travel.happy_travel_backend.models.User;
 import com.happy_travel.happy_travel_backend.repositories.UserRepository;
 
-import lombok.RequiredArgsConstructor;
 
 @Service
-@RequiredArgsConstructor
-public class UserService {    
-    private UserRepository userRepository;
-    //private PasswordEncoder passwordEncoder;
-    private JwtService jwtService;
+//@RequiredArgsConstructor
+public class UserService {
 
-    /*public User saveUser(User user) { 
-        user.setPassword(passwordEncoder.encode(user.getPassword())); 
-        return userRepository.save(user); 
-    } */
-    public AuthResponse register(RegisterRequest request) { 
-        //request.setPassword(passwordEncoder.encode(request.getPassword())); 
+    @Autowired
+    private UserRepository userRepository;
+
+    public UserService(UserRepository userRepository){
+        this.userRepository = userRepository;
+    }
+    public User register(RegisterRequest request) { 
         User user = User.builder()
+            .name(request.getName())
             .email(request.getEmail())
             .password(request.getPassword())
-            .name(request.getName())
             .build();
-        userRepository.save(user);
 
-        return AuthResponse.builder()
-            .token(jwtService.getTocken(user))
-            .build();
+        User resultingUser = userRepository.save(user);
+        System.out.println(resultingUser);
+        return user;
     } 
 
     public AuthResponse login(LoginRequest request){
         return null;
-    }
-
-    public Optional<User> findByName(String name) { 
-        return userRepository.findByName(name); 
     }
 
     
