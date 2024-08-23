@@ -15,21 +15,23 @@ import lombok.RequiredArgsConstructor;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-    
+
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
-        return http
-            .csrf(csrf ->
-                csrf
-                .disable())
-            .authorizeHttpRequests(autRequest ->
-            autRequest
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+            .csrf(csrf -> csrf.disable())  // Desactiva CSRF para permitir llamadas desde el frontend
+            .cors(withDefaults())           // Habilita CORS con la configuración que se define más adelante
+            .authorizeHttpRequests(authRequest -> authRequest
                 .requestMatchers("/auth/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/destinations/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/destinations/**").permitAll()
                 .anyRequest().authenticated()
-                )
-            .formLogin(withDefaults())
-            .build();
+            )
+            .formLogin(withDefaults());
+
+        return http.build();
     }
+
+    
+    
 }
