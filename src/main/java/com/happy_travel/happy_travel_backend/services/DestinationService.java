@@ -34,4 +34,8 @@ public class DestinationService {
        return destinationRepository.findAll();
     }
 
+    public Destination addDestination(Destination destination) {
+        return destinationRepository.save(destination);
+    }
+
 }
