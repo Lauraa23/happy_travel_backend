@@ -13,6 +13,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 
 
@@ -43,5 +45,12 @@ public class DestinationController {
         return new ResponseEntity<>(createdDestination, HttpStatus.CREATED);
     }
    
+    @GetMapping("/destinations/search")
+    @PreAuthorize("permitAll()")
+    public List<Destination> searchDestinationsByTitle(@RequestParam("title") String title) {
+        return destinationService.findDestinationsByTitle(title);
+    }
+    
+
     
 }

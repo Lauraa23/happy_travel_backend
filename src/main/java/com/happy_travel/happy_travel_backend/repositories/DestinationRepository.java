@@ -9,4 +9,6 @@ import com.happy_travel.happy_travel_backend.models.User;
 
 public interface DestinationRepository extends JpaRepository<Destination, Integer> {
     List<Destination> findByUser(User user);
+
+    List<Destination> findByTitleContainingIgnoreCase(String title);
 } 
