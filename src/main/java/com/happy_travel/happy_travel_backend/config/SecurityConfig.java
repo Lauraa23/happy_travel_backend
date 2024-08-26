@@ -20,7 +20,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final com.happy_travel.happy_travel_backend.jwt.jwtAuthenticationFilter jwtAuthenticationFilter;
+    private final com.happy_travel.happy_travel_backend.jwt.JwtAuthenticationFilter jwtAuthenticationFilter;
     private final AuthenticationProvider authProvider;
     
     @Bean
