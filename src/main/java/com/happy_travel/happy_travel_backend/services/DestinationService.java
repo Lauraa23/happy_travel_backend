@@ -34,4 +34,16 @@ public class DestinationService {
        return destinationRepository.findAll();
     }
 
+    public Destination addDestination(Destination destination) {
+        return destinationRepository.save(destination);
+    }
+
+    public List<Destination> findDestinationsByTitle(String title) {
+        return destinationRepository.findByTitleContainingIgnoreCase(title);
+    }
+
+    public List<Destination> findDestinationsByLocation(String location) {
+        return destinationRepository.findByLocationContainingIgnoreCase(location);
+    }
+
 }
