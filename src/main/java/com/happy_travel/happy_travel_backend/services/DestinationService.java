@@ -38,4 +38,12 @@ public class DestinationService {
         return destinationRepository.save(destination);
     }
 
+    public List<Destination> findDestinationsByTitle(String title) {
+        return destinationRepository.findByTitleContainingIgnoreCase(title);
+    }
+
+    public List<Destination> findDestinationsByLocation(String location) {
+        return destinationRepository.findByLocationContainingIgnoreCase(location);
+    }
+
 }
