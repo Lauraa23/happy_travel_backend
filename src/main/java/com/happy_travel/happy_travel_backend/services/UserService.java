@@ -1,7 +1,9 @@
 package com.happy_travel.happy_travel_backend.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.happy_travel.happy_travel_backend.models.AuthResponse;
 import com.happy_travel.happy_travel_backend.models.LoginRequest;
@@ -9,32 +11,36 @@ import com.happy_travel.happy_travel_backend.models.RegisterRequest;
 import com.happy_travel.happy_travel_backend.models.User;
 import com.happy_travel.happy_travel_backend.repositories.UserRepository;
 
+import lombok.RequiredArgsConstructor;
+
 
 @Service
-//@RequiredArgsConstructor
+@RequiredArgsConstructor
 public class UserService {
 
-    @Autowired
-    private UserRepository userRepository;
-    
-
-    public UserService(UserRepository userRepository){
-        this.userRepository = userRepository;
-    }
+    private final UserRepository userRepository;
+    private final JwtService jwtService;
+    private final AuthenticationManager authenticationManager;
+    private final PasswordEncoder passwordEncoder;
+ 
     public User register(RegisterRequest request) { 
+        String encodedPassword= passwordEncoder.encode(request.getPassword());
         User user = User.builder()
             .name(request.getName())
             .email(request.getEmail())
-            .password(request.getPassword())
+            .password(encodedPassword)
             .build();
-
-        User resultingUser = userRepository.save(user);
-        System.out.println(resultingUser);
-        return user;
+            
+        return userRepository.save(user);
     } 
 
     public AuthResponse login(LoginRequest request){
-        return null;
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+        User user=userRepository.findByEmail(request.getEmail()).orElseThrow();
+        String token=jwtService.getToken(user);
+        return AuthResponse.builder()
+            .token(token)
+            .build();
     }
 
     
