@@ -1,7 +1,10 @@
 package com.happy_travel.happy_travel_backend.config;
 
+import com.happy_travel.happy_travel_backend.jwt.JwtAuthenticationFilter;
+
 import static org.springframework.security.config.Customizer.withDefaults;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -19,8 +22,10 @@ import lombok.RequiredArgsConstructor;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-
-    private final com.happy_travel.happy_travel_backend.jwt.jwtAuthenticationFilter jwtAuthenticationFilter;
+    
+    @Autowired
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    @Autowired
     private final AuthenticationProvider authProvider;
     
     @Bean

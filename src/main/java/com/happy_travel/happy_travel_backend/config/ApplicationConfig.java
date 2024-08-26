@@ -30,12 +30,12 @@ public class ApplicationConfig {
     @Bean
     public AuthenticationProvider authenticationProvider()
     {
-        DaoAuthenticationProvider authenticationProvider= new DaoAuthenticationProvider();
+        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
         authenticationProvider.setUserDetailsService(userDetailService());
         authenticationProvider.setPasswordEncoder(passwordEncoder());
         return authenticationProvider;
     }
-
+    
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -44,7 +44,7 @@ public class ApplicationConfig {
     @Bean
     public UserDetailsService userDetailService() {
         return username -> userRepository.findByEmail(username)
-        .orElseThrow(()-> new UsernameNotFoundException("User not fournd"));
+        .orElseThrow(()-> new UsernameNotFoundException("User not found"));
     }
 
 }
