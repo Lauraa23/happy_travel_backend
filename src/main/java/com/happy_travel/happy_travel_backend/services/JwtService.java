@@ -73,25 +73,4 @@ public class JwtService {
         return getExpiration(token).before(new Date());
     }
 
-    /*public boolean isTokenValid(String token) {
-        try {
-            Jwts.parserBuilder()
-                .setSigningKey(getKey())
-                .build()
-                .parseClaimsJws(token);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    public String extractUsername(String token) {
-        return Jwts.parserBuilder()
-        .setSigningKey(getKey())
-        .build()
-        .parseClaimsJws(token)
-        .getBody()
-        .getSubject();
-    }*/
-
 }

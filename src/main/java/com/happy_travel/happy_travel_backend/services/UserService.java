@@ -1,12 +1,8 @@
 package com.happy_travel.happy_travel_backend.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.happy_travel.happy_travel_backend.models.AuthResponse;
@@ -26,12 +22,7 @@ public class UserService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
-    
-    /*public UserService(UserRepository userRepository, JwtService jwtService, AuthenticationManager authenticationManager){
-        this.userRepository = userRepository;
-        this.jwtService = jwtService;
-        this.authenticationManager = authenticationManager;
-    }*/
+ 
     public User register(RegisterRequest request) { 
         String encodedPassword= passwordEncoder.encode(request.getPassword());
         User user = User.builder()
@@ -39,9 +30,7 @@ public class UserService {
             .email(request.getEmail())
             .password(encodedPassword)
             .build();
-
-        //User resultingUser = userRepository.save(user);
-        //System.out.println(resultingUser);
+            
         return userRepository.save(user);
     } 
 
