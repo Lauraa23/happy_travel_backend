@@ -50,6 +50,13 @@ public class DestinationController {
     public List<Destination> searchDestinationsByTitle(@RequestParam("title") String title) {
         return destinationService.findDestinationsByTitle(title);
     }
+
+    @GetMapping("/destinations/filter")
+    @PreAuthorize("permitAll()")
+    public List<Destination> searchDestinationsByLocation(@RequestParam("location") String location) {
+        return destinationService.findDestinationsByLocation(location);
+    }
+
     
 
     

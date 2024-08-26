@@ -42,4 +42,8 @@ public class DestinationService {
         return destinationRepository.findByTitleContainingIgnoreCase(title);
     }
 
+    public List<Destination> findDestinationsByLocation(String location) {
+        return destinationRepository.findByLocationContainingIgnoreCase(location);
+    }
+
 }
