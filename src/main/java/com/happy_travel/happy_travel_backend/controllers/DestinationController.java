@@ -4,9 +4,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.happy_travel.happy_travel_backend.models.Destination;
 import com.happy_travel.happy_travel_backend.services.DestinationService;
+import com.happy_travel.happy_travel_backend.services.ImageService;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -24,6 +26,8 @@ public class DestinationController {
     
     private final DestinationService destinationService;
 
+    @Autowired
+    private ImageService imageService;
 
     public DestinationController(DestinationService destinationService) {
 
