@@ -46,4 +46,14 @@ public class DestinationService {
         return destinationRepository.findByLocationContainingIgnoreCase(location);
     }
 
+    public void deleteDestinationByTitle(String title) {
+        List<Destination> destinations = destinationRepository.findByTitleContainingIgnoreCase(title);
+        if(destinations.isEmpty()) {
+            throw new RuntimeException("Destination not found");
+        } 
+        for (Destination destination : destinations) {
+            destinationRepository.delete(destination);
+        }
+    }
+
 }
