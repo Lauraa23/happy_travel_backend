@@ -9,7 +9,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,13 +31,11 @@ public class DestinationController {
     }
 
     @GetMapping("/destinations")
-    @PreAuthorize("permitAll()")
     public List<Destination> getDestinations() {
         return destinationService.getDestinations();
     }
     
     @PostMapping("/destinations")
-    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Destination> addDestination(@RequestBody Destination newDestination) {
 
         Destination createdDestination = destinationService.addDestination(newDestination);
@@ -46,18 +44,24 @@ public class DestinationController {
     }
    
     @GetMapping("/destinations/search")
-    @PreAuthorize("permitAll()")
     public List<Destination> searchDestinationsByTitle(@RequestParam("title") String title) {
         return destinationService.findDestinationsByTitle(title);
     }
 
     @GetMapping("/destinations/filter")
-    @PreAuthorize("permitAll()")
     public List<Destination> searchDestinationsByLocation(@RequestParam("location") String location) {
         return destinationService.findDestinationsByLocation(location);
     }
 
-    
+    @DeleteMapping("/destinations")
+    public ResponseEntity<Void> deleteDestinationByTitle(@RequestParam("title") String title) {
+        try {
+            destinationService.deleteDestinationByTitle(title);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
 
     
 }
