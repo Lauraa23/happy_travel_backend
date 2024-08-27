@@ -75,4 +75,21 @@ public class DestinationService {
         }
     }
 
+    public Destination updateDestination(String title, Destination updatedDestination) {
+        List<Destination> destinations = destinationRepository.findByTitleContainingIgnoreCase(title);
+        
+        if (destinations.isEmpty()) {
+            throw new RuntimeException("Destination not found");
+        }
+
+        Destination destination = destinations.get(0);
+        
+        destination.setTitle(updatedDestination.getTitle());
+        destination.setLocation(updatedDestination.getLocation());
+        destination.setDescription(updatedDestination.getDescription());
+        destination.setImageUrl(updatedDestination.getImageUrl());
+        
+        return destinationRepository.save(destination);
+    }
+
 }
