@@ -38,8 +38,8 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/destinations/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/destinations/**").permitAll()
                 .requestMatchers(HttpMethod.DELETE, "/destinations/**").permitAll()
-                .requestMatchers("/images/**").permitAll()
                 .requestMatchers(HttpMethod.PUT, "/destinations/**").permitAll()
+                .requestMatchers("/images/**").permitAll()
                 .anyRequest().authenticated()
             )
             .sessionManagement(sessionManager->

@@ -26,8 +26,8 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 
 @RestController
 public class DestinationController {
@@ -110,10 +110,11 @@ public class DestinationController {
     @PutMapping("/destinations")
     public ResponseEntity<Destination> updateDestination(
         @RequestParam("title") String title,
-        @RequestBody Destination updatedDestination) {
+        @RequestPart("updatedDestination") Destination updatedDestination,
+            @RequestPart(value = "newImage", required = false) MultipartFile newImage) {
 
             try {
-                Destination destination = destinationService.updateDestination(title, updatedDestination);
+                Destination destination = destinationService.updateDestination(title, updatedDestination, newImage);
                 return new ResponseEntity<>(destination, HttpStatus.OK);
             } catch (RuntimeException e) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
