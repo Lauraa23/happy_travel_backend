@@ -9,7 +9,6 @@ import com.happy_travel.happy_travel_backend.models.User;
 import com.happy_travel.happy_travel_backend.repositories.DestinationRepository;
 import com.happy_travel.happy_travel_backend.repositories.UserRepository;
 import com.happy_travel.happy_travel_backend.services.DestinationService;
-import com.happy_travel.happy_travel_backend.services.ImageService;
 
 //import io.micrometer.common.util.StringUtils;
 
@@ -26,17 +25,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
 
 @RestController
 public class DestinationController {
     @Autowired
     private final DestinationService destinationService;
 
-    @Autowired
-    private ImageService imageService;
     @Autowired
     private UserRepository userRepository;
 
