@@ -92,7 +92,7 @@ public class DestinationController {
         return destinationService.findDestinationsByTitle(title);
     }
 
-    @GetMapping("/destinations/search")
+    @GetMapping("/destinations/searchById")
     public Optional<Destination> searchDestinationsById(@RequestParam("id") int id) {
        return destinationService.findDestinationById(id);
     }
