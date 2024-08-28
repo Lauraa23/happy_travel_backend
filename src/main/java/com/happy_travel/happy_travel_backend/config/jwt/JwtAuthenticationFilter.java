@@ -1,13 +1,10 @@
-package com.happy_travel.happy_travel_backend.jwt;
+package com.happy_travel.happy_travel_backend.config.jwt;
 
 import java.io.IOException;
 
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
-
-import com.happy_travel.happy_travel_backend.services.JwtService;
-
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;

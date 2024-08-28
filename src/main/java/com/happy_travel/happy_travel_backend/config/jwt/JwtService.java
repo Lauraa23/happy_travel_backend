@@ -1,4 +1,4 @@
-package com.happy_travel.happy_travel_backend.services;
+package com.happy_travel.happy_travel_backend.config.jwt;
 
 import java.security.Key;
 import java.util.Date;

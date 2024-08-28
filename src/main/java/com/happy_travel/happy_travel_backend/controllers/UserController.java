@@ -4,13 +4,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.happy_travel.happy_travel_backend.config.jwt.JwtService;
 import com.happy_travel.happy_travel_backend.models.AuthResponse;
 import com.happy_travel.happy_travel_backend.models.LoginRequest;
 import com.happy_travel.happy_travel_backend.models.RegisterRequest;
 import com.happy_travel.happy_travel_backend.models.User;
 
 import com.happy_travel.happy_travel_backend.services.UserService;
-import com.happy_travel.happy_travel_backend.services.JwtService;
 
 import lombok.RequiredArgsConstructor;
 
