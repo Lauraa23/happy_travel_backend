@@ -9,6 +9,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -52,7 +53,7 @@ public class DestinationService {
         return destinationRepository.findByTitleContainingIgnoreCase(title);
     }
 
-    public List<Destination> findDestinationById(int id) {
+    public Optional<Destination> findDestinationById(int id) {
         if (!destinationRepository.existsById(id)) {
             throw new RuntimeException("Destination not found");
         }
@@ -89,7 +90,7 @@ public class DestinationService {
         if (!destinationRepository.existsById(id)) {
             throw new RuntimeException("Destination not found");
         }
-        Destination destination = destinationRepository.findById(null)
+        Destination destination = destinationRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Destination not found"));
             
         String imageUrl = destination.getImageUrl();

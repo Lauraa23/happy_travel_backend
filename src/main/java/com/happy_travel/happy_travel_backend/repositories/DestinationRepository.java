@@ -1,6 +1,7 @@
 package com.happy_travel.happy_travel_backend.repositories;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -11,5 +12,5 @@ public interface DestinationRepository extends JpaRepository<Destination, Intege
     List<Destination> findByUser(User user);
     List<Destination> findByTitleContainingIgnoreCase(String title);
     List<Destination> findByLocationContainingIgnoreCase(String location);
-    List<Destination> findById(int id);
+    Optional<Destination> findById(int id);
 } 
