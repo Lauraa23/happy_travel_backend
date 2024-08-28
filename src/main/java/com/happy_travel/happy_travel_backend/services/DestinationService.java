@@ -53,6 +53,13 @@ public class DestinationService {
         return destinationRepository.findByTitleContainingIgnoreCase(title);
     }
 
+    public List<Destination> findDestinationById(int id) {
+        if (!destinationRepository.existsById(id)) {
+            throw new RuntimeException("Destination not found");
+        }
+      return destinationRepository.findById(id);
+    }
+
     public List<Destination> findDestinationsByLocation(String location) {
         return destinationRepository.findByLocationContainingIgnoreCase(location);
     }

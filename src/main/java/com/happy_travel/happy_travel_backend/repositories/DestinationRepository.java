@@ -11,4 +11,5 @@ public interface DestinationRepository extends JpaRepository<Destination, Intege
     List<Destination> findByUser(User user);
     List<Destination> findByTitleContainingIgnoreCase(String title);
     List<Destination> findByLocationContainingIgnoreCase(String location);
+    List<Destination> findById(int id);
 } 
