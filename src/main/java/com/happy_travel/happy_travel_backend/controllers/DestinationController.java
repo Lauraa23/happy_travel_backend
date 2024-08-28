@@ -40,7 +40,8 @@ public class DestinationController {
     @Autowired
     private DestinationRepository destinationRepository;
 
-    public DestinationController(DestinationService destinationService, UserRepository userRepository, DestinationRepository destinationRepository) {
+    public DestinationController(DestinationService destinationService, UserRepository userRepository,
+            DestinationRepository destinationRepository) {
         this.destinationService = destinationService;
     }
 
@@ -50,7 +51,8 @@ public class DestinationController {
     }
 
     @PostMapping("/destinations")
-    public ResponseEntity<Destination> addDestination(@RequestParam("title") String title,
+    public ResponseEntity<Destination> addDestination(
+            @RequestParam("title") String title,
             @RequestParam("location") String location,
             @RequestParam("description") String description,
             @RequestParam("imgUrl") MultipartFile imgUrl,
@@ -58,7 +60,7 @@ public class DestinationController {
 
         // Aquí manejas la lógica para guardar la imagen en el servidor
         String fileName = StringUtils.cleanPath(imgUrl.getOriginalFilename());
-        Path imagePath= Paths.get("src/main/resources/static/images/" + fileName);
+        Path imagePath = Paths.get("src/main/resources/static/images/" + fileName);
 
         try {
             Files.copy(imgUrl.getInputStream(), imagePath, StandardCopyOption.REPLACE_EXISTING);
@@ -71,7 +73,7 @@ public class DestinationController {
 
         // Busca el usuario que está creando el destino
         User user = userRepository.findById(userId)
-            .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
         // Crea un nuevo destino con los datos recibidos
         Destination destination = new Destination();
@@ -109,15 +111,25 @@ public class DestinationController {
 
     @PutMapping("/destinations")
     public ResponseEntity<Destination> updateDestination(
-        @RequestParam("title") String title,
-        @RequestPart("updatedDestination") Destination updatedDestination,
+            @RequestParam("title") String title,
+            @RequestParam("location") String location,
+            @RequestParam("description") String description,
+            @RequestParam("imgUrl") MultipartFile imgUrl,
+            // @RequestPart("updatedDestination") Destination updatedDestination,
             @RequestPart(value = "newImage", required = false) MultipartFile newImage) {
 
-            try {
-                Destination destination = destinationService.updateDestination(title, updatedDestination, newImage);
-                return new ResponseEntity<>(destination, HttpStatus.OK);
-            } catch (RuntimeException e) {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            }
+        try {
+
+            Destination updatedDestination = new Destination();
+            updatedDestination.setTitle(title);
+            updatedDestination.setLocation(location);
+            updatedDestination.setDescription(description);
+            //updatedDestination.setImageUrl(newImage.);
+
+            Destination destination = destinationService.updateDestination(title, updatedDestination, newImage);
+            return new ResponseEntity<>(destination, HttpStatus.OK);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+    }
 }
