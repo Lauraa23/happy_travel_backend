@@ -89,7 +89,7 @@ public class DestinationService {
         if (!destinationRepository.existsById(id)) {
             throw new RuntimeException("Destination not found");
         }
-        Destination destination = destinationRepository.findById(id)
+        Destination destination = destinationRepository.findById(null)
             .orElseThrow(() -> new RuntimeException("Destination not found"));
             
         String imageUrl = destination.getImageUrl();
