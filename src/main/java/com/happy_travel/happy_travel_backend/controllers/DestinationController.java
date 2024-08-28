@@ -16,6 +16,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -92,7 +93,7 @@ public class DestinationController {
     }
 
     @GetMapping("/destinations/search")
-    public List<Destination> searchDestinationsById(@RequestParam("id") int id) {
+    public Optional<Destination> searchDestinationsById(@RequestParam("id") int id) {
        return destinationService.findDestinationById(id);
     }
 
