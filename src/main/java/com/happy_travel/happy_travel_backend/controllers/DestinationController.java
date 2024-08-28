@@ -10,8 +10,6 @@ import com.happy_travel.happy_travel_backend.repositories.DestinationRepository;
 import com.happy_travel.happy_travel_backend.repositories.UserRepository;
 import com.happy_travel.happy_travel_backend.services.DestinationService;
 
-//import io.micrometer.common.util.StringUtils;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -27,7 +25,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
 
 @RestController
 public class DestinationController {
@@ -55,21 +52,21 @@ public class DestinationController {
             @RequestParam("title") String title,
             @RequestParam("location") String location,
             @RequestParam("description") String description,
-            @RequestParam("imgUrl") MultipartFile imgUrl,
+            @RequestParam("imageUrl") MultipartFile imageUrl,
             @RequestParam("user") Integer userId) {
 
         // Aquí manejas la lógica para guardar la imagen en el servidor
-        String fileName = StringUtils.cleanPath(imgUrl.getOriginalFilename());
+        String fileName = StringUtils.cleanPath(imageUrl.getOriginalFilename());
         Path imagePath = Paths.get("src/main/resources/static/images/" + fileName);
 
         try {
-            Files.copy(imgUrl.getInputStream(), imagePath, StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(imageUrl.getInputStream(), imagePath, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
         // Cambia la URL de la imagen para incluir el dominio del backend
-        String imageUrl = "http://localhost:3001/images/" + fileName;
+        String imageUrlString = "http://localhost:3001/images/" + fileName;
 
         // Busca el usuario que está creando el destino
         User user = userRepository.findById(userId)
@@ -80,7 +77,7 @@ public class DestinationController {
         destination.setTitle(title);
         destination.setLocation(location);
         destination.setDescription(description);
-        destination.setImageUrl(imageUrl); // Guarda la URL relativa de la imagen
+        destination.setImageUrl(imageUrlString); // Guarda la URL relativa de la imagen
         destination.setUser(user);
 
         // Guarda el destino en la base de datos
@@ -111,22 +108,21 @@ public class DestinationController {
 
     @PutMapping("/destinations")
     public ResponseEntity<Destination> updateDestination(
+            @RequestParam("id") int id,
             @RequestParam("title") String title,
             @RequestParam("location") String location,
             @RequestParam("description") String description,
-            @RequestParam("imgUrl") MultipartFile imgUrl,
-            // @RequestPart("updatedDestination") Destination updatedDestination,
-            @RequestPart(value = "newImage", required = false) MultipartFile newImage) {
+            @RequestParam(value = "imageUrl", required = false) MultipartFile imageUrl) {
 
         try {
-
+            // Creamos un objeto Destination con los nuevos datos
             Destination updatedDestination = new Destination();
             updatedDestination.setTitle(title);
             updatedDestination.setLocation(location);
             updatedDestination.setDescription(description);
-            //updatedDestination.setImageUrl(newImage.);
-
-            Destination destination = destinationService.updateDestination(title, updatedDestination, newImage);
+            
+            // Llamamos al servicio para actualizar el destino utilizando el id
+            Destination destination = destinationService.updateDestination(id, updatedDestination, imageUrl);
             return new ResponseEntity<>(destination, HttpStatus.OK);
         } catch (RuntimeException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
