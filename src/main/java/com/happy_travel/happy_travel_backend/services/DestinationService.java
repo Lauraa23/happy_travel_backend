@@ -79,12 +79,19 @@ public class DestinationService {
         }
     }
 
+    public void deleteDestinationById(int id) {
+        if (!destinationRepository.existsById(id)) {
+            throw new RuntimeException("Destination not found");
+        }
+        destinationRepository.deleteById(id);
+    }
+
     @Transactional
     public Destination updateDestination(Integer id,Destination updatedDestination, MultipartFile imageUrl) {
         // Buscar el destino por id
         Destination destination = destinationRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Destination not found"));
-
+        
         // Manejar la imagen
         if (imageUrl != null && !imageUrl.isEmpty()) {
             // Elimina la imagen existente del sistema de archivos
