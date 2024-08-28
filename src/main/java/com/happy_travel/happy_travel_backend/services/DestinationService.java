@@ -12,6 +12,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -85,17 +86,14 @@ public class DestinationService {
         destinationRepository.deleteById(id);
     }
 
-    public Destination updateDestination(String title, Destination updatedDestination, MultipartFile newImage) {
-        List<Destination> destinations = destinationRepository.findByTitleContainingIgnoreCase(title);
-        
-        if (destinations.isEmpty()) {
-            throw new RuntimeException("Destination not found");
-        }
-
-        Destination destination = destinations.get(0);
+    @Transactional
+    public Destination updateDestination(Integer id,Destination updatedDestination, MultipartFile imageUrl) {
+        // Buscar el destino por id
+        Destination destination = destinationRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Destination not found"));
         
         // Manejar la imagen
-        if (newImage != null && !newImage.isEmpty()) {
+        if (imageUrl != null && !imageUrl.isEmpty()) {
             // Elimina la imagen existente del sistema de archivos
             String oldImageUrl = destination.getImageUrl();
             if (oldImageUrl != null) {
@@ -110,11 +108,13 @@ public class DestinationService {
             }
 
             // Guarda la nueva imagen
-            String newFileName = StringUtils.cleanPath(newImage.getOriginalFilename());
+            String newFileName = StringUtils.cleanPath(imageUrl.getOriginalFilename());
             Path newImagePath = Paths.get(imagesDirectory + newFileName);
             try {
-                Files.copy(newImage.getInputStream(), newImagePath, StandardCopyOption.REPLACE_EXISTING);
-                destination.setImageUrl("/images/" + newFileName); // Actualiza la URL en la base de datos
+                Files.copy(imageUrl.getInputStream(), newImagePath, StandardCopyOption.REPLACE_EXISTING);
+               // Actualiza la URL de la imagen en el destino
+                String newImageUrl = "http://localhost:3001/images/" + newFileName;
+                destination.setImageUrl(newImageUrl);
             } catch (IOException e) {
                 e.printStackTrace();
                 throw new RuntimeException("Failed to save new image");
@@ -124,7 +124,6 @@ public class DestinationService {
         destination.setTitle(updatedDestination.getTitle());
         destination.setLocation(updatedDestination.getLocation());
         destination.setDescription(updatedDestination.getDescription());
-        //destination.setImageUrl(updatedDestination.getImageUrl());
         
         return destinationRepository.save(destination);
     }
