@@ -1,6 +1,6 @@
 package com.happy_travel.happy_travel_backend.config;
 
-import com.happy_travel.happy_travel_backend.jwt.JwtAuthenticationFilter;
+import com.happy_travel.happy_travel_backend.config.jwt.JwtAuthenticationFilter;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 

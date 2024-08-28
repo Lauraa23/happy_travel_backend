@@ -97,7 +97,7 @@ public class DestinationController {
         return destinationService.findDestinationsByLocation(location);
     }
 
-    @DeleteMapping("/destinations")
+    /*@DeleteMapping("/destinations")
     public ResponseEntity<Void> deleteDestinationByTitle(@RequestParam("title") String title) {
         try {
             destinationService.deleteDestinationByTitle(title);
@@ -105,7 +105,7 @@ public class DestinationController {
         } catch (RuntimeException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-    }
+    }*/
 
     @DeleteMapping("/destinations/{id}")
     public ResponseEntity<Void> deleteDestinationById(@PathVariable("id") int id) {
