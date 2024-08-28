@@ -78,6 +78,13 @@ public class DestinationService {
         }
     }
 
+    public void deleteDestinationById(int id) {
+        if (!destinationRepository.existsById(id)) {
+            throw new RuntimeException("Destination not found");
+        }
+        destinationRepository.deleteById(id);
+    }
+
     public Destination updateDestination(String title, Destination updatedDestination, MultipartFile newImage) {
         List<Destination> destinations = destinationRepository.findByTitleContainingIgnoreCase(title);
         
