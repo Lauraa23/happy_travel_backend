@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import com.happy_travel.happy_travel_backend.config.jwt.JwtService;
 import com.happy_travel.happy_travel_backend.models.AuthResponse;
 import com.happy_travel.happy_travel_backend.models.LoginRequest;
 import com.happy_travel.happy_travel_backend.models.RegisterRequest;

@@ -12,7 +12,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -64,7 +63,7 @@ public class DestinationService {
         return destinationRepository.findByLocationContainingIgnoreCase(location);
     }
 
-    public void deleteDestinationByTitle(String title) {
+    /*public void deleteDestinationByTitle(String title) {
         List<Destination> destinations = destinationRepository.findByTitleContainingIgnoreCase(title);
         if(destinations.isEmpty()) {
             throw new RuntimeException("Destination not found");
@@ -84,16 +83,32 @@ public class DestinationService {
             }
             destinationRepository.delete(destination);
         }
-    }
+    }*/
 
     public void deleteDestinationById(int id) {
         if (!destinationRepository.existsById(id)) {
             throw new RuntimeException("Destination not found");
         }
+        Destination destination = destinationRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Destination not found"));
+            
+        String imageUrl = destination.getImageUrl();
+        if (imageUrl != null && !imageUrl.isEmpty()) {
+            // Elimina la imagen del sistema de archivos
+            String fileName = imageUrl.substring(imageUrl.lastIndexOf('/') + 1);
+            Path imagePath = Paths.get(imagesDirectory, fileName);
+
+            try {
+                Files.deleteIfExists(imagePath);
+            } catch (IOException e) {
+                e.printStackTrace();
+                // Opcional: Manejar la excepción adecuadamente, como lanzar una nueva excepción o registrar el error.
+            }
+        }
+
         destinationRepository.deleteById(id);
     }
 
-    @Transactional
     public Destination updateDestination(Integer id,Destination updatedDestination, MultipartFile imageUrl) {
         // Buscar el destino por id
         Destination destination = destinationRepository.findById(id)

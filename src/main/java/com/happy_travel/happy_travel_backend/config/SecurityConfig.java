@@ -1,6 +1,6 @@
 package com.happy_travel.happy_travel_backend.config;
 
-import com.happy_travel.happy_travel_backend.jwt.JwtAuthenticationFilter;
+import com.happy_travel.happy_travel_backend.config.jwt.JwtAuthenticationFilter;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -35,10 +35,10 @@ public class SecurityConfig {
             .cors(withDefaults())           // Habilita CORS con la configuración que se define más adelante
             .authorizeHttpRequests(authRequest -> authRequest
                 .requestMatchers("/auth/**").permitAll()
-                .requestMatchers(HttpMethod.POST, "/destinations/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/destinations/**").authenticated()
                 .requestMatchers(HttpMethod.GET, "/destinations/**").permitAll()
-                .requestMatchers(HttpMethod.DELETE, "/destinations/**").permitAll()
-                .requestMatchers(HttpMethod.PUT, "/destinations/**").permitAll()
+                .requestMatchers(HttpMethod.DELETE, "/destinations/**").authenticated()
+                .requestMatchers(HttpMethod.PUT, "/destinations/**").authenticated()
                 .requestMatchers("/images/**").permitAll()
                 .anyRequest().authenticated()
             )

@@ -42,12 +42,12 @@ public class DestinationController {
         this.destinationService = destinationService;
     }
 
-    @GetMapping("/getAllDestinations")
+    @GetMapping("/destinations")
     public List<Destination> getDestinations() {
         return destinationService.getDestinations();
     }
 
-    @PostMapping("/addDestinations")
+    @PostMapping("/destinations")
     public ResponseEntity<Destination> addDestination(
             @RequestParam("title") String title,
             @RequestParam("location") String location,
@@ -86,22 +86,22 @@ public class DestinationController {
         return ResponseEntity.ok(savedDestination);
     }
 
-    @GetMapping("/destinations/searchByTitle")
+    @GetMapping("/destinations/search")
     public List<Destination> searchDestinationsByTitle(@RequestParam("title") String title) {
         return destinationService.findDestinationsByTitle(title);
     }
 
-    @GetMapping("/destinations/searchById")
+    @GetMapping("/destinations/search")
     public List<Destination> searchDestinationsById(@RequestParam("id") int id) {
        return destinationService.findDestinationById(id);
     }
 
-    @GetMapping("/destinations/filterByLocation")
+    @GetMapping("/destinations/filter")
     public List<Destination> searchDestinationsByLocation(@RequestParam("location") String location) {
         return destinationService.findDestinationsByLocation(location);
     }
 
-    @DeleteMapping("/deleteDestinationsByTitle")
+    /*@DeleteMapping("/destinations")
     public ResponseEntity<Void> deleteDestinationByTitle(@RequestParam("title") String title) {
         try {
             destinationService.deleteDestinationByTitle(title);
@@ -109,9 +109,9 @@ public class DestinationController {
         } catch (RuntimeException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-    }
+    }*/
 
-    @DeleteMapping("/deleteDestinationsById")
+    @DeleteMapping("/destinations")
     public ResponseEntity<Void> deleteDestinationById(@RequestParam("id") int id) {
         try {
             destinationService.deleteDestinationById(id);
@@ -121,7 +121,7 @@ public class DestinationController {
         }
     }
 
-    @PutMapping("/updateDestinations")
+    @PutMapping("/destinations")
     public ResponseEntity<Destination> updateDestination(
             @RequestParam("id") int id,
             @RequestParam("title") String title,
