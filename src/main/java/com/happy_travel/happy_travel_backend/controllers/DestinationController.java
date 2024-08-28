@@ -22,7 +22,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -92,6 +91,11 @@ public class DestinationController {
         return destinationService.findDestinationsByTitle(title);
     }
 
+    @GetMapping("/destinations/search")
+    public List<Destination> searchDestinationsById(@RequestParam("id") int id) {
+       return destinationService.findDestinationById(id);
+    }
+
     @GetMapping("/destinations/filter")
     public List<Destination> searchDestinationsByLocation(@RequestParam("location") String location) {
         return destinationService.findDestinationsByLocation(location);
@@ -107,8 +111,8 @@ public class DestinationController {
         }
     }*/
 
-    @DeleteMapping("/destinations/{id}")
-    public ResponseEntity<Void> deleteDestinationById(@PathVariable("id") int id) {
+    @DeleteMapping("/destinations")
+    public ResponseEntity<Void> deleteDestinationById(@RequestParam("id") int id) {
         try {
             destinationService.deleteDestinationById(id);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
