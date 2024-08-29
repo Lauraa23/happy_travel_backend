@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -31,11 +32,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 public class DestinationController {
+
     @Autowired
     private final DestinationService destinationService;
 
     @Autowired
     private DestinationRepository destinationRepository;
+
+    @Value("${images.directory}")
+    private String imagesDirectory;
 
     public DestinationController(DestinationService destinationService, UserRepository userRepository,
             DestinationRepository destinationRepository) {
@@ -45,6 +50,21 @@ public class DestinationController {
     @GetMapping("/destinations")
     public List<Destination> getDestinations() {
         return destinationService.getDestinations();
+    }
+    
+    @GetMapping("/destinations/search")
+    public List<Destination> searchDestinationsByTitle(@RequestParam("title") String title) {
+        return destinationService.findDestinationsByTitle(title);
+    }
+
+    @GetMapping("/destinations/searchById")
+    public Optional<Destination> searchDestinationsById(@RequestParam("id") int id) {
+       return destinationService.findDestinationById(id);
+    }
+
+    @GetMapping("/destinations/filter")
+    public List<Destination> searchDestinationsByLocation(@RequestParam("location") String location) {
+        return destinationService.findDestinationsByLocation(location);
     }
 
     @PostMapping("/destinations")
@@ -59,7 +79,7 @@ public class DestinationController {
 
         // Aquí manejas la lógica para guardar la imagen en el servidor
         String fileName = StringUtils.cleanPath(imageUrl.getOriginalFilename());
-        Path imagePath = Paths.get("src/main/resources/static/images/" + fileName);
+        Path imagePath = Paths.get(imagesDirectory + fileName);
 
         try {
             Files.copy(imageUrl.getInputStream(), imagePath, StandardCopyOption.REPLACE_EXISTING);
@@ -84,29 +104,25 @@ public class DestinationController {
         return ResponseEntity.ok(savedDestination);
     }
 
-    @GetMapping("/destinations/search")
-    public List<Destination> searchDestinationsByTitle(@RequestParam("title") String title) {
-        return destinationService.findDestinationsByTitle(title);
-    }
-
-    @GetMapping("/destinations/searchById")
-    public Optional<Destination> searchDestinationsById(@RequestParam("id") int id) {
-       return destinationService.findDestinationById(id);
-    }
-
-    @GetMapping("/destinations/filter")
-    public List<Destination> searchDestinationsByLocation(@RequestParam("location") String location) {
-        return destinationService.findDestinationsByLocation(location);
-    }
-
     @DeleteMapping("/destinations")
     public ResponseEntity<Void> deleteDestinationById(@RequestParam("id") int id) {
-        try {
-            destinationService.deleteDestinationById(id);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } catch (RuntimeException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        // Obtener el usuario autenticado
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User authenticatedUser = (User) authentication.getPrincipal();
+
+        // Buscar el destino por ID
+        Destination destination = destinationRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Destino no encontrado"));
+
+        // Verificar si el usuario autenticado es el creador del destino
+        if (destination.getUser().getId() != authenticatedUser.getId()) {
+            // Retornar 403 Forbidden si el usuario autenticado no es el creador
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
+
+        // Eliminar el destino si la verificación es exitosa
+        destinationService.deleteDestinationById(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PutMapping("/destinations")
@@ -116,19 +132,39 @@ public class DestinationController {
             @RequestParam("location") String location,
             @RequestParam("description") String description,
             @RequestParam(value = "imageUrl", required = false) MultipartFile imageUrl) {
+        // Obtener el usuario autenticado
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User authenticatedUser = (User) authentication.getPrincipal();
 
-        try {
-            // Creamos un objeto Destination con los nuevos datos
-            Destination updatedDestination = new Destination();
-            updatedDestination.setTitle(title);
-            updatedDestination.setLocation(location);
-            updatedDestination.setDescription(description);
-            
-            // Llamamos al servicio para actualizar el destino utilizando el id
-            Destination destination = destinationService.updateDestination(id, updatedDestination, imageUrl);
-            return new ResponseEntity<>(destination, HttpStatus.OK);
-        } catch (RuntimeException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        // Buscar el destino por ID
+        Destination destination = destinationRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Destino no encontrado"));
+
+        // Verificar si el usuario autenticado es el creador del destino
+        if (destination.getUser().getId() != authenticatedUser.getId()) {
+            // Retornar 403 Forbidden si el usuario autenticado no es el creador
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
+        // Actualizar los campos del destino existente
+        destination.setTitle(title);
+        destination.setLocation(location);
+        destination.setDescription(description);
+
+        // Si se proporciona una nueva imagen, actualizarla
+        if (imageUrl != null && !imageUrl.isEmpty()) {
+            String fileName = StringUtils.cleanPath(imageUrl.getOriginalFilename());
+            Path imagePath = Paths.get(imagesDirectory + fileName);
+            try {
+                Files.copy(imageUrl.getInputStream(), imagePath, StandardCopyOption.REPLACE_EXISTING);
+                String imageUrlString = "http://localhost:3001/images/" + fileName;
+                destination.setImageUrl(imageUrlString);
+            } catch (IOException e) {
+                e.printStackTrace();
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            }
+        }
+        // Guardar el destino actualizado en la base de datos
+        Destination updatedDestination = destinationRepository.save(destination);
+        return new ResponseEntity<>(updatedDestination, HttpStatus.OK);
     }
 }
