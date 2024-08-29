@@ -40,7 +40,7 @@ public class User implements UserDetails {
     @JsonIgnore
     private Set<Destination> destinations;
 
-
+    
     public int getId() {
         return this.id;
     }
@@ -108,4 +108,5 @@ public class User implements UserDetails {
     public String getUsername() {
         return this.email;
     }
+
 }
