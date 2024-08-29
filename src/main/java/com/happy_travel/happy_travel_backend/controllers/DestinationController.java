@@ -21,6 +21,8 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,9 +33,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class DestinationController {
     @Autowired
     private final DestinationService destinationService;
-
-    @Autowired
-    private UserRepository userRepository;
 
     @Autowired
     private DestinationRepository destinationRepository;
@@ -53,8 +52,10 @@ public class DestinationController {
             @RequestParam("title") String title,
             @RequestParam("location") String location,
             @RequestParam("description") String description,
-            @RequestParam("imageUrl") MultipartFile imageUrl,
-            @RequestParam("user") Integer userId) {
+            @RequestParam("imageUrl") MultipartFile imageUrl) {
+        // Obtener el usuario autenticado
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) authentication.getPrincipal(); // Usuario autenticado
 
         // Aquí manejas la lógica para guardar la imagen en el servidor
         String fileName = StringUtils.cleanPath(imageUrl.getOriginalFilename());
@@ -68,10 +69,6 @@ public class DestinationController {
         }
         // Cambia la URL de la imagen para incluir el dominio del backend
         String imageUrlString = "http://localhost:3001/images/" + fileName;
-
-        // Busca el usuario que está creando el destino
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
         // Crea un nuevo destino con los datos recibidos
         Destination destination = new Destination();
@@ -101,16 +98,6 @@ public class DestinationController {
     public List<Destination> searchDestinationsByLocation(@RequestParam("location") String location) {
         return destinationService.findDestinationsByLocation(location);
     }
-
-    /*@DeleteMapping("/destinations")
-    public ResponseEntity<Void> deleteDestinationByTitle(@RequestParam("title") String title) {
-        try {
-            destinationService.deleteDestinationByTitle(title);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } catch (RuntimeException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }*/
 
     @DeleteMapping("/destinations")
     public ResponseEntity<Void> deleteDestinationById(@RequestParam("id") int id) {

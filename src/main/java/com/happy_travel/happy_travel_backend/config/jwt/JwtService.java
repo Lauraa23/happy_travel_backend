@@ -9,6 +9,8 @@ import java.util.function.Function;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import com.happy_travel.happy_travel_backend.models.User;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -19,11 +21,12 @@ import io.jsonwebtoken.security.Keys;
 public class JwtService {
     private static final String SECRET_KEY= "DAF3F1E453E77E2ADF7D46C2A66DEjavainusesecretkeysecretkeyhola";
 
-    public String getToken(UserDetails user) {
+    public String getToken(User user) {
         return getToken(new HashMap<>(), user);
     }
 
-    private String getToken(Map<String,Object> extraClaims, UserDetails user) {
+    private String getToken(Map<String,Object> extraClaims, User user) {
+        //extraClaims.put("id", user.getId()); //ejemplo de como agregar extraclaims al body de la firma
         return Jwts
             .builder()
             .setClaims(extraClaims)
